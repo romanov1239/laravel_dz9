@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\NewsHidden;
+use App\Listeners\NewsHiddenListener;
+use App\Models\News;
+use App\Observers\NewsObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -15,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
+        NewsHidden::class => [
+            NewsHiddenListener::class,
+        ],
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
@@ -25,7 +32,9 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        parent::boot();
+
+        News::observe(NewsObserver::class);
     }
 
     /**
